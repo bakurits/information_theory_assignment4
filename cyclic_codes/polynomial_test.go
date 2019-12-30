@@ -96,3 +96,60 @@ func TestPolynomial_Divide(t *testing.T) {
 		})
 	}
 }
+
+func TestPolynomial_Multiply(t *testing.T) {
+	type fields struct {
+		Base         int
+		Degree       int
+		Coefficients []int
+	}
+	type args struct {
+		polMul *Polynomial
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    Polynomial
+		wantErr bool
+	}{
+		{
+			name: "test1",
+			fields: fields{
+				Base:         5,
+				Degree:       2,
+				Coefficients: []int{1, 1, 1},
+			},
+			args: args{
+				polMul: &Polynomial{
+					Base:         5,
+					Degree:       1,
+					Coefficients: []int{2},
+				},
+			},
+			want: Polynomial{
+				Base:         5,
+				Degree:       3,
+				Coefficients: []int{2, 2, 2, 0},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			pol := &Polynomial{
+				Base:         tt.fields.Base,
+				Degree:       tt.fields.Degree,
+				Coefficients: tt.fields.Coefficients,
+			}
+			got, err := pol.Multiply(tt.args.polMul)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Multiply() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Multiply() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
